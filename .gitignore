@@ -1,3 +1,21 @@
+### Swift Cloned Source ###
+/build/
+/clang/
+/cmark/
+/compiler-rt/
+/llbuild/
+/lldb/
+/llvm/
+/ninja/
+/swift-corelibs-foundation/
+/swift-corelibs-libdispatch/
+/swift-corelibs-xctest/
+/swift-integration-tests/
+/swift-syntax/
+/swift-xcode-playground-support/
+/swift/
+/swiftpm/
+
 ### OSX ###
 *.DS_Store
 .AppleDouble

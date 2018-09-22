@@ -8,16 +8,24 @@ class FoundationTests: XCTestCase {
     }
 
     func testContentsOfFile(){
-	if let str = try? String(contentsOfFile: "inputs/testfile") {
-    	  XCTAssertEqual(str,"content")
-	}
+        if let str = try? String(contentsOfFile: "inputs/testfile") {
+            XCTAssertEqual(str,"content")
+        } else {
+            XCTFail("Unable to read string from input file")
+        }
     }
 
     func testWriteToFile(){
-	try! "Some content".write(toFile:"outputs/testfile", atomically: false, encoding: .utf8)
-	if let str = try? String(contentsOfFile: "outputs/testfile") {
-    	  XCTAssertEqual(str,"Some content")
-	}
+        do {
+            try "Some content".write(toFile:"outputs/testfile", atomically: false, encoding: .utf8)
+        } catch {
+            XCTFail("Unable to write string to file")
+        }
+        if let str = try? String(contentsOfFile: "outputs/testfile") {
+            XCTAssertEqual(str,"Some content")
+        } else {
+            XCTFail("Unable to read string from output file")
+        }
     }
 
     func testURL(){

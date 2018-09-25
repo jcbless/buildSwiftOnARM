@@ -1,0 +1,34 @@
+diff --git a/lib/target.py b/lib/target.py
+index 3edca25e..5d55ee02 100644
+--- a/lib/target.py
++++ b/lib/target.py
+@@ -200,7 +200,7 @@ class ArchType:
+             return ArchType.thumb
+         if string == "thumbeb":
+             return ArchType.thumbeb
+-        if string == "x86":
++        if string == "x86" or string == "i686" or string == "i386":
+             return ArchType.x86
+         if string == "x86_64":
+             return ArchType.x86_64
+@@ -384,7 +384,7 @@ class Target:
+ 
+     @property
+     def swift_triple(self):
+-        triple = ArchType.to_string(self.arch)
++        triple = self.swift_arch
+         if self.sdk == OSType.MacOSX:
+             return None
+         elif self.sdk == OSType.Linux:
+@@ -425,7 +425,10 @@ class Target:
+     
+     @property
+     def swift_arch(self):
+-        return ArchType.to_string(self.arch) 
++        if self.sdk == OSType.Linux and self.arch == ArchType.x86:
++            return "i686"
++        else:
++            return ArchType.to_string(self.arch)
+ 
+ class TargetConditional:
+     _sdk = None

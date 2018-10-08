@@ -29,14 +29,14 @@ index b38de34..2614c44 100644
 +#if arch(arm64) && !(os(macOS) || os(iOS) || os(tvOS) || os(watchOS) || os(Windows))
 +@_fixed_layout
 +public struct CVaListPointer {
-+  @_versioned // FIXME(sil-serialize-all)
++  @usableFromInline // FIXME(sil-serialize-all)
 +  internal var value: (__stack: UnsafeMutablePointer<Int>?,
 +                       __gr_top: UnsafeMutablePointer<Int>?,
 +                       __vr_top: UnsafeMutablePointer<Int>?,
 +                       __gr_off: Int32,
 +                       __vr_off: Int32)
 +
-+  @_inlineable // FIXME(sil-serialize-all)
++  @usableFromInline // FIXME(sil-serialize-all)
 +  public // @testable
 +  init(__stack: UnsafeMutablePointer<Int>?,
 +       __gr_top: UnsafeMutablePointer<Int>?,
@@ -57,7 +57,7 @@ index b38de34..2614c44 100644
  }
 +#endif
  
- @_versioned
+ @usableFromInline
  @_inlineable
 diff --git a/stdlib/public/core/VarArgs.swift b/stdlib/public/core/VarArgs.swift
 index 52e9f21..2758b15 100644
@@ -65,7 +65,7 @@ index 52e9f21..2758b15 100644
 +++ b/stdlib/public/core/VarArgs.swift
 @@ -85,6 +85,30 @@ internal let _registerSaveWords = _countGPRegisters + _countSSERegisters * _sseR
  internal let _countGPRegisters = 16
- @_versioned
+ @usableFromInline
  internal let _registerSaveWords = _countGPRegisters
 +
 +#elseif arch(arm64) && !(os(macOS) || os(iOS) || os(tvOS) || os(watchOS) || os(Windows))
@@ -78,16 +78,16 @@ index 52e9f21..2758b15 100644
 +// 2. 128-bit FP/SIMD register save area q0 - q7
 +// 3. Stack argument area
 +
-+@_versioned
++@usableFromInline
 +internal let _countGPRegisters = 8
 +
-+@_versioned
++@usableFromInline
 +internal let _countFPRegisters = 8
 +
-+@_versioned
++@usableFromInline
 +internal let _fpRegisterWords = 16 /  MemoryLayout<Int>.size
 +
-+@_versioned
++@usableFromInline
 +internal let _registerSaveWords = 
 +  _countGPRegisters + (_countFPRegisters * _fpRegisterWords)
 +
@@ -101,10 +101,10 @@ index 52e9f21..2758b15 100644
 +#elseif arch(arm64) && !(os(macOS) || os(iOS) || os(tvOS) || os(watchOS) || os(Windows))
 +
 +@_fixed_layout // FIXME(sil-serialize-all)
-+@_versioned // FIXME(sil-serialize-all)
++@usableFromInline // FIXME(sil-serialize-all)
 +final internal class _VaListBuilder {
-+  @_inlineable // FIXME(sil-serialize-all)
-+  @_versioned // FIXME(sil-serialize-all)
++
++  @usableFromInline // FIXME(sil-serialize-all)
 +  internal init() {
 +    // Prepare the register save area.
 +    allocated = _registerSaveWords
@@ -113,16 +113,16 @@ index 52e9f21..2758b15 100644
 +    count = allocated
 +  }
 +
-+  @_inlineable // FIXME(sil-serialize-all)
-+  @_versioned // FIXME(sil-serialize-all)
++
++  @usableFromInline // FIXME(sil-serialize-all)
 +  deinit {
 +    if let allocatedStorage = storage {
 +      deallocStorage(wordCount: allocated, storage: allocatedStorage)
 +    }
 +  }
 +
-+  @_inlineable // FIXME(sil-serialize-all)
-+  @_versioned // FIXME(sil-serialize-all)
++
++  @usableFromInline // FIXME(sil-serialize-all)
 +  internal func append(_ arg: CVarArg) {
 +    var encoded = arg._cVarArgEncoding
 +
@@ -146,8 +146,8 @@ index 52e9f21..2758b15 100644
 +    }
 +  }
 +
-+  @_inlineable // FIXME(sil-serialize-all)
-+  @_versioned // FIXME(sil-serialize-all)
++
++  @usableFromInline // FIXME(sil-serialize-all)
 +  internal func va_list() -> CVaListPointer {
 +    let vr_top = storage + (_fpRegisterWords * _countFPRegisters)
 +    let gr_top = vr_top + _countGPRegisters
@@ -156,8 +156,8 @@ index 52e9f21..2758b15 100644
 +                          __vr_top: vr_top, __gr_off: -64, __vr_off: -128)
 +  }
 +
-+  @_inlineable // FIXME(sil-serialize-all)
-+  @_versioned // FIXME(sil-serialize-all)
++
++  @usableFromInline // FIXME(sil-serialize-all)
 +  internal func appendWords(_ words: [Int]) {
 +    let newCount = count + words.count
 +    if newCount > allocated {
@@ -183,8 +183,8 @@ index 52e9f21..2758b15 100644
 +    }
 +  }
 +
-+  @_inlineable // FIXME(sil-serialize-all)
-+  @_versioned // FIXME(sil-serialize-all)
++
++  @usableFromInline // FIXME(sil-serialize-all)
 +  internal func rawSizeAndAlignment(
 +    _ wordCount: Int
 +  ) -> (Builtin.Word, Builtin.Word) {
@@ -192,15 +192,15 @@ index 52e9f21..2758b15 100644
 +      requiredAlignmentInBytes._builtinWordValue)
 +  }
 +
-+  @_inlineable // FIXME(sil-serialize-all)
-+  @_versioned // FIXME(sil-serialize-all)
++
++  @usableFromInline // FIXME(sil-serialize-all)
 +  internal func allocStorage(wordCount: Int) -> UnsafeMutablePointer<Int> {
 +    let (rawSize, rawAlignment) = rawSizeAndAlignment(wordCount)
 +    let rawStorage = Builtin.allocRaw(rawSize, rawAlignment)
 +    return UnsafeMutablePointer<Int>(rawStorage)
 +  }
 +
-+  @_versioned // FIXME(sil-serialize-all)
++  @usableFromInline // FIXME(sil-serialize-all)
 +  internal func deallocStorage(
 +    wordCount: Int, storage: UnsafeMutablePointer<Int>
 +  ) {
@@ -208,25 +208,25 @@ index 52e9f21..2758b15 100644
 +    Builtin.deallocRaw(storage._rawValue, rawSize, rawAlignment)
 +  }
 +
-+  @_versioned // FIXME(sil-serialize-all)
++  @usableFromInline // FIXME(sil-serialize-all)
 +  internal let requiredAlignmentInBytes = MemoryLayout<Double>.alignment
 +
-+  @_versioned // FIXME(sil-serialize-all)
++  @usableFromInline // FIXME(sil-serialize-all)
 +  internal var count = 0
 +
-+  @_versioned // FIXME(sil-serialize-all)
++  @usableFromInline // FIXME(sil-serialize-all)
 +  internal var allocated = 0
 +
-+  @_versioned // FIXME(sil-serialize-all)
++  @usableFromInline // FIXME(sil-serialize-all)
 +  internal var storage: UnsafeMutablePointer<Int>!
 +
-+  @_versioned // FIXME(sil-serialize-all)
++  @usableFromInline // FIXME(sil-serialize-all)
 +  internal var gpRegistersUsed = 0
 +
-+  @_versioned // FIXME(sil-serialize-all)
++  @usableFromInline // FIXME(sil-serialize-all)
 +  internal var fpRegistersUsed = 0
 +
-+  @_versioned // FIXME(sil-serialize-all)
++  @usableFromInline // FIXME(sil-serialize-all)
 +  internal var overflowWordsUsed = 0
 +}
 +

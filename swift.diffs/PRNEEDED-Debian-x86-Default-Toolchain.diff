@@ -1,0 +1,12 @@
+diff --git a/lib/Driver/UnixToolChains.cpp b/lib/Driver/UnixToolChains.cpp
+index a90199c459..9a6e6bfb49 100644
+--- a/lib/Driver/UnixToolChains.cpp
++++ b/lib/Driver/UnixToolChains.cpp
+@@ -111,6 +111,7 @@ std::string toolchains::GenericUnix::getDefaultLinker() const {
+     // final executables, as such, unless specified, we default to gold
+     // linker.
+     return "gold";
++  case llvm::Triple::x86:
+   case llvm::Triple::x86_64:
+   case llvm::Triple::ppc64:
+   case llvm::Triple::ppc64le:

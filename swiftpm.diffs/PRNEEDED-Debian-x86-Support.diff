@@ -1,0 +1,46 @@
+diff --git a/Sources/Build/Triple.swift b/Sources/Build/Triple.swift
+index 86c1a027..31e1d504 100644
+--- a/Sources/Build/Triple.swift
++++ b/Sources/Build/Triple.swift
+@@ -32,6 +32,7 @@ public struct Triple {
+ 
+     public enum Arch: String {
+         case x86_64
++        case x86
+         case ppc64le
+         case s390x
+         case aarch64
+@@ -113,7 +114,8 @@ public struct Triple {
+     }
+ 
+     public static let macOS = try! Triple("x86_64-apple-macosx10.10")
+-    public static let x86Linux = try! Triple("x86_64-unknown-linux")
++    public static let x86_64Linux = try! Triple("x86_64-unknown-linux")
++    public static let i686Linux = try! Triple("i686-unknown-linux")
+     public static let ppc64leLinux = try! Triple("powerpc64le-unknown-linux")
+     public static let s390xLinux = try! Triple("s390x-unknown-linux")
+     public static let arm64Linux = try! Triple("aarch64-unknown-linux")
+@@ -127,7 +129,9 @@ public struct Triple {
+     public static let hostTriple: Triple = .windows
+   #elseif os(Linux)
+     #if arch(x86_64)
+-      public static let hostTriple: Triple = .x86Linux
++      public static let hostTriple: Triple = .x86_64Linux
++    #elseif arch(i386)
++      public static let hostTriple: Triple = .i686Linux
+     #elseif arch(powerpc64le)
+       public static let hostTriple: Triple = .ppc64leLinux
+     #elseif arch(s390x)
+diff --git a/Utilities/bootstrap b/Utilities/bootstrap
+index cc532dd1..2228babc 100755
+--- a/Utilities/bootstrap
++++ b/Utilities/bootstrap
+@@ -1032,6 +1032,8 @@ def main():
+     elif platform.system() == 'Linux':              
+         if platform.machine() == 'x86_64':
+             build_target = "x86_64-unknown-linux"
++        elif platform.machine() == "i686":
++            build_target = "i686-unknown-linux"
+         elif platform.machine() == 's390x':
+             build_target = "s390x-unknown-linux"
+         elif platform.machine() == 'ppc64le':

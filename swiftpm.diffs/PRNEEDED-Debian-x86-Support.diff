@@ -1,12 +1,12 @@
 diff --git a/Sources/Build/Triple.swift b/Sources/Build/Triple.swift
-index 86c1a027..31e1d504 100644
+index 86c1a027..fdcaca5e 100644
 --- a/Sources/Build/Triple.swift
 +++ b/Sources/Build/Triple.swift
 @@ -32,6 +32,7 @@ public struct Triple {
  
      public enum Arch: String {
          case x86_64
-+        case x86
++        case i686
          case ppc64le
          case s390x
          case aarch64
@@ -32,10 +32,10 @@ index 86c1a027..31e1d504 100644
        public static let hostTriple: Triple = .ppc64leLinux
      #elseif arch(s390x)
 diff --git a/Utilities/bootstrap b/Utilities/bootstrap
-index cc532dd1..2228babc 100755
+index d1ef2d99..4f4637ee 100755
 --- a/Utilities/bootstrap
 +++ b/Utilities/bootstrap
-@@ -1032,6 +1032,8 @@ def main():
+@@ -1041,6 +1041,8 @@ def main():
      elif platform.system() == 'Linux':              
          if platform.machine() == 'x86_64':
              build_target = "x86_64-unknown-linux"

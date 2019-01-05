@@ -15,6 +15,10 @@
 /swift-xcode-playground-support/
 /swift/
 /swiftpm/
+/clang-tools-extra/
+/icu/
+/libcxx/
+/swift-stress-tester/
 
 ### OSX ###
 *.DS_Store
